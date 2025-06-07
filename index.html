@@ -3,55 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Solar System - Milestone 2</title>
+    <title>3D Solar System - Interactive Experience</title>
     <style>
+        :root {
+            --primary-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --panel-bg: rgba(20, 20, 30, 0.85);
+            --text-color: #f0f0f0;
+            --highlight-color: #61dafb;
+            --border-color: rgba(97, 218, 251, 0.5);
+        }
         body {
             margin: 0;
             overflow: hidden;
             background-color: #000;
-            font-family: Arial, sans-serif;
+            font-family: var(--primary-font);
+            color: var(--text-color);
         }
-        
-        canvas {
-            display: block;
-        }
-        
-        #info {
+        canvas { display: block; }
+        .ui-panel {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(5px);
+            border-radius: 10px;
+            padding: 15px;
+            z-index: 100;
+        }
+        #title-panel {
+            top: 20px;
+            left: 20px;
+            border-left: 3px solid var(--highlight-color);
+        }
+        #title-panel h3 { margin: 0 0 5px 0; }
+        #title-panel p { margin: 0; font-size: 14px; opacity: 0.8; }
+        
+        #info-panel {
+            top: 20px;
+            right: -400px; /* Hidden by default */
+            width: 300px;
+            transition: right 0.5s ease-in-out;
+            border-left: 3px solid var(--highlight-color);
+        }
+        #info-panel.visible { right: 20px; }
+        #info-panel h2 { margin: 0 0 15px; color: var(--highlight-color); }
+        #info-panel #close-btn {
+            position: absolute; top: 10px; right: 10px;
+            background: none; border: none; font-size: 24px;
+            color: var(--text-color); cursor: pointer; opacity: 0.7;
+        }
+        #info-panel #close-btn:hover { opacity: 1; }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 15px;
+        }
+        .info-item span:first-child { font-weight: bold; }
+        #planet-fun-fact {
+            margin-top: 15px;
+            font-style: italic;
+            opacity: 0.9;
             font-size: 14px;
-            z-index: 100;
+            line-height: 1.4;
         }
-        
-        #controls {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            color: white;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
+
+        #time-controls {
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        #time-controls button {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 16px;
+            padding: 8px 15px;
             border-radius: 5px;
-            font-size: 12px;
-            z-index: 100;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #time-controls button:hover, #time-controls button.active {
+            background: var(--highlight-color);
+            color: #000;
+        }
+        #time-controls #time-scale-label {
+            font-size: 14px;
+            min-width: 100px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div id="info">
-        <h3>3D Solar System - Milestone 2</h3>
-        <p>Realistic Visuals & Physics!</p>
+    <!-- Main Title & Info -->
+    <div id="title-panel" class="ui-panel">
+        <h3>3D Solar System - Milestone 3</h3>
+        <p>Interactive Experience & Polish</p>
     </div>
     
-    <div id="controls">
-        <p><strong>Controls:</strong></p>
-        <p>• Mouse: Orbit around</p>
-        <p>• Scroll: Zoom in/out</p>
-        <p>• Space: Pause/Resume</p>
+    <!-- Planet Information Panel (hidden by default) -->
+    <div id="info-panel" class="ui-panel">
+        <button id="close-btn">&times;</button>
+        <h2 id="planet-name">Planet Name</h2>
+        <div id="planet-info-content"></div>
+        <p id="planet-fun-fact"></p>
+    </div>
+
+    <!-- Time Controls -->
+    <div id="time-controls" class="ui-panel">
+        <button id="time-slower" title="Slower">&laquo;</button>
+        <button id="time-pause" title="Pause/Play">&#10074;&#10074;</button>
+        <button id="time-normal" class="active" title="Normal Speed">1x</button>
+        <button id="time-faster" title="Faster">&raquo;</button>
+        <span id="time-scale-label">Time Scale: 1x</span>
     </div>
 
     <script type="importmap">
